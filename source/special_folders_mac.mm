@@ -1,18 +1,33 @@
 // Copyright(c) 2017 René Hansen.
 
-#import "ha/platform/special_folders.h"
-#import "ha/platform/binary.h"
+#import "hao/special_folders/special_folders.h"
 #import <Cocoa/Cocoa.h>
 #import <CoreFoundation/CoreFoundation.h>
 #import <string>
+#import <dlfcn.h>
 
 extern void* moduleHandle;
 extern CFBundleRef ghInst;
 
 namespace hao::special_folders {
     
+//-----------------------------------------------------------------------------
+static FolderType get_binary_file_path()
+{
+    FolderType binary_path;
+    Dl_info info;
+    if (dladdr((const void*)get_binary_file_path, &info) == 0)
+        return binary_path;
+
+    if (info.dli_fname == nullptr)
+        return binary_path;
+
+    binary_path.assign(info.dli_fname);
+    return binary_path;
+}
+
 //------------------------------------------------------------------------
-FolderType getUserApplicationDataFolder()
+FolderType get_user_application_data_folder()
 {
    	NSURL* url = [[NSFileManager defaultManager] URLForDirectory:NSApplicationSupportDirectory
                                                                inDomain:NSUserDomainMask
@@ -25,7 +40,7 @@ FolderType getUserApplicationDataFolder()
 }
 
 //------------------------------------------------------------------------
-FolderType getPreferencesFolder()
+FolderType get_preferences_folder()
 {
     NSURL* url = [[NSFileManager defaultManager] URLForDirectory:NSLibraryDirectory
                                                         inDomain:NSUserDomainMask
@@ -47,17 +62,17 @@ static size_t findSecondToLastSlash (const FolderType& binary_path)
 }
     
 //------------------------------------------------------------------------
-static FolderType getBundleContentsDir (const FolderType& binary_path)
+static FolderType get_bundle_contents_dir (const FolderType& binary_path)
 {
     FolderType contentsPath = binary_path.substr(0, findSecondToLastSlash(binary_path));
     return contentsPath;
 }
     
 //------------------------------------------------------------------------
-FolderType getApplicationDataFolder()
+FolderType get_application_data_folder()
 {
-    auto binarybinary_pathPath = Platform::getBinaryFilePath();
-    auto contents_path = getBundleContentsDir(binary_path);
+    auto binary_path = get_binary_file_path();
+    auto contents_path = get_bundle_contents_dir(binary_path);
     auto resources_path = contents_path + FolderType{"/Resources"};
     
     return resources_path;
