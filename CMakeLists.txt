@@ -42,6 +42,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
             source/special_folders_win32.cpp
     )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    find_library(COCOA_LIBRARY Cocoa)
+    target_link_libraries (special-folders ${COCOA_LIBRARY})
     target_sources(special-folders
         PRIVATE
             source/special_folders_mac.mm
