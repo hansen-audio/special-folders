@@ -1,14 +1,37 @@
 // Copyright(c) 2017 René Hansen.
 
-#include "ha/platform/special_folders.h"
-#include "ha/platform/string_convert.h"
+#include "hao/special_folders/special_folders.h"
 #include <shlobj.h>
+#include <stdexcept>
 
 #if _WIN32_WINNT < _WIN32_WINNT_VISTA
 #error "Only Win Vista or higher"
 #endif
 
 namespace hao::special_folders {
+
+//------------------------------------------------------------------------
+static std::string convert(const std::wstring& wide_string)
+{
+    if (wide_string.empty())
+    {
+        return "";
+    }
+
+    const auto size_needed = WideCharToMultiByte(CP_UTF8, 0, &wide_string.at(0),
+                                                 (int)wide_string.size(),
+                                                 nullptr, 0, nullptr, nullptr);
+    if (size_needed <= 0)
+    {
+        throw std::runtime_error("WideCharToMultiByte() failed: " +
+                                 std::to_string(size_needed));
+    }
+
+    std::string result(size_needed, 0);
+    WideCharToMultiByte(CP_UTF8, 0, &wide_string.at(0), (int)wide_string.size(),
+                        &result.at(0), size_needed, nullptr, nullptr);
+    return result;
+}
 
 //------------------------------------------------------------------------
 FolderType get_known_folder(const GUID folder_id)
@@ -21,7 +44,7 @@ FolderType get_known_folder(const GUID folder_id)
     {
         std::wstring tmp(wsz_path);
         CoTaskMemFree(wsz_path);
-        return StringUtils::Convert::convert(tmp);
+        return convert(tmp);
     }
 
     return {};
