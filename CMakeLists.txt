@@ -41,7 +41,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
         PRIVATE
             source/special_folders_win32.cpp
     )
-elseif(CMAKE_SYTEM_NAME STREQUAL "Darwin")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     target_sources(special-folders
         PRIVATE
             source/special_folders_mac.mm
