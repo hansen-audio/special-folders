@@ -1,4 +1,4 @@
-// Copyright 2023
+// Copyright(c) 2017 René Hansen.
 
 #include "hao/special_folders/special_folders.h"
 #include <iostream>
