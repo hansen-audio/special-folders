@@ -14,6 +14,12 @@ int main()
     std::cout << app_data_folder << std::endl;
     std::cout << prefs_folder << std::endl;
     std::cout << usr_app_data << std::endl;
+    std::cout << hao::special_folders::get_application_data(
+                     hao::special_folders::Domain::kUser)
+              << std::endl;
+    std::cout << hao::special_folders::get_application_data(
+                     hao::special_folders::Domain::kLocal)
+              << std::endl;
 
     return 0;
 }

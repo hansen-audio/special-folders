@@ -69,4 +69,20 @@ FolderType get_preferences_folder()
 }
 
 //------------------------------------------------------------------------
+FolderType get_application_data(const Domain& domain)
+{
+    switch (domain)
+    {
+        case Domain::kUser:
+            return get_known_folder(FOLDERID_ProgramFiles);
+        case Domain::kLocal:
+            return get_known_folder(FOLDERID_ProgramData);
+        default:
+            break;
+    }
+
+    return {};
+}
+
+//------------------------------------------------------------------------
 } // namespace hao::special_folders

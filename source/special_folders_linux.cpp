@@ -66,5 +66,23 @@ FolderType get_application_data_folder()
     return resourcesPath;
 }
 
+//------------------------------------------------------------------------
+FolderType get_application_data(const Domain& domain)
+{
+    switch (domain)
+    {
+        case Domain::kUser:
+            // TODO
+            break;
+        case Domain::kLocal:
+            // TODO
+            break;
+        default:
+            break;
+    }
+
+    return {};
+}
+
 //-----------------------------------------------------------------------------
 } // namespace hao::special_folders

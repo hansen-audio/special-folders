@@ -79,4 +79,35 @@ FolderType get_application_data_folder()
 }
 
 //------------------------------------------------------------------------
+FolderType get_application_data(const Domain& domain)
+{
+    switch (domain)
+    {
+        case Domain::kUser:
+        {
+            NSURL* url = [[NSFileManager defaultManager] URLForDirectory:NSApplicationSupportDirectory
+                                                                inDomain:NSUserDomainMask
+                                                       appropriateForURL:nil
+                                                                  create:NO
+                                                                   error:nil];
+            
+            FolderType url_str {[url.path UTF8String]};
+            return url_str;
+        }
+        case Domain::kLocal:
+        {
+            NSURL* url = [[NSFileManager defaultManager] URLForDirectory:NSApplicationSupportDirectory
+                                                                inDomain:NSLocalDomainMask
+                                                       appropriateForURL:nil
+                                                                  create:NO
+                                                                   error:nil];
+            
+            FolderType url_str {[url.path UTF8String]};
+            return url_str;
+        }
+        default:
+            break;
+    }
+}
+//------------------------------------------------------------------------
 } // namespace SpecialFolders
