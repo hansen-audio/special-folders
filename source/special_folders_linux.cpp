@@ -24,7 +24,7 @@ static FolderType get_binary_file_path()
 }
 
 //-----------------------------------------------------------------------------
-FolderType get_user_application_data_folder()
+static FolderType get_home()
 {
     struct passwd* pw = getpwuid(getuid());
     if (!pw)
@@ -32,12 +32,6 @@ FolderType get_user_application_data_folder()
 
     const char* home_dir = pw->pw_dir;
     return {home_dir};
-}
-
-//------------------------------------------------------------------------
-FolderType get_preferences_folder()
-{
-    return get_user_application_data_folder();
 }
 
 //------------------------------------------------------------------------
@@ -57,7 +51,7 @@ static FolderType get_bundle_contents_dir(const FolderType& binary_path)
 }
 
 //------------------------------------------------------------------------
-FolderType get_application_data_folder()
+static FolderType get_application_data_folder()
 {
     auto binary_path   = get_binary_file_path();
     auto contents_path = get_bundle_contents_dir(binary_path);
@@ -67,16 +61,22 @@ FolderType get_application_data_folder()
 }
 
 //------------------------------------------------------------------------
-FolderType get_application_data(const Domain& domain)
+// public interface
+//------------------------------------------------------------------------
+FolderType get_preferences_folder()
+{
+    return get_home();
+}
+
+//------------------------------------------------------------------------
+FolderType get_application_data_folder(const Domain& domain)
 {
     switch (domain)
     {
         case Domain::kUser:
-            // TODO
-            break;
+            return get_home();
         case Domain::kLocal:
-            // TODO
-            break;
+            return get_home();
         default:
             break;
     }

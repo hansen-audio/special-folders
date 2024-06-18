@@ -27,33 +27,6 @@ static FolderType get_binary_file_path()
 }
 
 //------------------------------------------------------------------------
-FolderType get_user_application_data_folder()
-{
-   	NSURL* url = [[NSFileManager defaultManager] URLForDirectory:NSApplicationSupportDirectory
-                                                               inDomain:NSUserDomainMask
-                                                      appropriateForURL:nil
-                                                                 create:NO
-                                                                  error:nil];
-    
-    FolderType url_str {[url.path UTF8String]};
-    return url_str;
-}
-
-//------------------------------------------------------------------------
-FolderType get_preferences_folder()
-{
-    NSURL* url = [[NSFileManager defaultManager] URLForDirectory:NSLibraryDirectory
-                                                        inDomain:NSUserDomainMask
-                                               appropriateForURL:nil
-                                                          create:NO
-                                                           error:nil];
-    
-    FolderType url_str {[url.path UTF8String]};
-    url_str += "/Preferences";
-    return url_str;
-}
-
-//------------------------------------------------------------------------
 static size_t findSecondToLastSlash (const FolderType& binary_path)
 {
     auto pos = binary_path.find_last_of("/");
@@ -69,7 +42,7 @@ static FolderType get_bundle_contents_dir (const FolderType& binary_path)
 }
     
 //------------------------------------------------------------------------
-FolderType get_application_data_folder()
+static FolderType get_bundle_resources()
 {
     auto binary_path = get_binary_file_path();
     auto contents_path = get_bundle_contents_dir(binary_path);
@@ -79,7 +52,23 @@ FolderType get_application_data_folder()
 }
 
 //------------------------------------------------------------------------
-FolderType get_application_data(const Domain& domain)
+// public interface
+//------------------------------------------------------------------------
+FolderType get_preferences_folder()
+{
+    NSURL* url = [[NSFileManager defaultManager] URLForDirectory:NSLibraryDirectory
+                                                        inDomain:NSUserDomainMask
+                                               appropriateForURL:nil
+                                                          create:NO
+                                                           error:nil];
+    
+    FolderType url_str {[url.path UTF8String]};
+    url_str += "/Preferences";
+    return url_str;
+}
+
+//------------------------------------------------------------------------
+FolderType get_application_data_folder(const Domain& domain)
 {
     switch (domain)
     {
