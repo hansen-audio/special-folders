@@ -8,10 +8,18 @@
 #error "Only Win Vista or higher"
 #endif
 
+//-----------------------------------------------------------------------------
+// https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid
+//-----------------------------------------------------------------------------
+
 namespace hao::special_folders {
 
 //------------------------------------------------------------------------
-static std::string convert(const std::wstring& wide_string)
+using StringType  = std::string;
+using WStringType = std::wstring;
+
+//------------------------------------------------------------------------
+static StringType convert(const WStringType& wide_string)
 {
     if (wide_string.empty())
     {
@@ -27,7 +35,7 @@ static std::string convert(const std::wstring& wide_string)
                                  std::to_string(size_needed));
     }
 
-    std::string result(size_needed, 0);
+    StringType result(size_needed, 0);
     WideCharToMultiByte(CP_UTF8, 0, &wide_string.at(0), (int)wide_string.size(),
                         &result.at(0), size_needed, nullptr, nullptr);
     return result;
@@ -51,25 +59,13 @@ FolderType get_known_folder(const GUID folder_id)
 }
 
 //------------------------------------------------------------------------
-FolderType get_user_application_data_folder()
+FolderType get_preferences_folder()
 {
     return get_known_folder(FOLDERID_RoamingAppData);
 }
 
 //------------------------------------------------------------------------
-FolderType get_application_data_folder()
-{
-    return get_known_folder(FOLDERID_ProgramFiles);
-}
-
-//------------------------------------------------------------------------
-FolderType get_preferences_folder()
-{
-    return get_user_application_data_folder();
-}
-
-//------------------------------------------------------------------------
-FolderType get_application_data(const Domain& domain)
+FolderType get_application_data_folder(const Domain& domain)
 {
     switch (domain)
     {
